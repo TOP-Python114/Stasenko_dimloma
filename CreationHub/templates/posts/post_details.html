@@ -1,0 +1,106 @@
+{% extends "base.html" %}
+{% block header %}{% endblock %}
+    {% block title %} Пост | CreationHub {% endblock %}
+    {% block content %}
+    <section id="info">
+      {% if user.is_authenticated %}
+        <div class="row post__info">
+          <aside class="col-12 col-md-3 ">
+            <ul class="list-group list-group-flush info__blocks">
+              <li class="list-group-item">
+                Дата публикации: {{ post.created|date:"d E Y" }}
+              </li>
+              {% if post.group %}
+                <li class="list-group-item">
+                  Группа: {{post.group.slug}}<br>
+                  <a href="{% url 'posts:group_list' post.group.slug %}" class="posts__data">Все записи группы</a>
+                </li>
+              {% endif %}
+              <li class="list-group-item">
+                Автор: <a href="{% url 'posts:profile' post.author %}" class="posts_author"> {{ post.author.get_full_name }} <br>
+                  <span>@aka</span> {{post.author}}</a>
+              </li>
+              <li class="list-group-item d-flex justify-content-between align-items-center">
+                Всего постов автора: <span >{{ post_amount }}</span>
+              </li>
+              <li class="list-group-item">
+                <a href="{% url 'posts:profile' post.author  %}">
+                  Все посты пользователя
+                </a>
+              </li>
+            </ul>
+          </aside>
+          <article class="col-12 col-md-9 info__content">
+            <p  class="posts__text">
+              {{ post.text|linebreaksbr }}
+            </p>
+            {% if post.author == user or user.is_superuser %}
+              <div class="post__link">   
+                <a href="{% url 'posts:edit' post.id %}" class="posts__data"> Pедактировать запись</a>
+              </div>
+            {% endif %}
+                  {% if user.is_authenticated %}
+            <section id="form__comment">
+                <div class="comment__card">
+                  <h5 class="card-header">Добавить комментарий:</h5>
+                  <div class="card-wrapper">
+                    <form method="post" action="{% url 'posts:add_comment' post.id %}" class="form-post">
+                      {% csrf_token %}
+                      <div class="form-group">
+                        {{ form.text }}
+                      </div>
+                      <button type="submit" class="btn btn-primary">Отправить</button>
+                    </form>
+                  </div>
+                </div>
+            </section>
+        {% endif %}
+              {% if comments %}
+                  <h2 class="comment_header">Комментарии</h2>
+                  
+                  {% for comment in comments %}
+                      <section id="comment">
+                            <div class="posts_container">
+                                <ul class="posts__data posts__ul">
+                                  <li>
+                                    Автор: <a href="{% url 'posts:profile' comment.author_comment %}">{{ comment.author.get_full_name }} @aka {{comment.author_comment}}</a>
+                                  </li>
+                                  <li class="posts__li">
+                                    <span class="post_article">Дата публикации:</span> {{ comment.created|date:"d E Y" }}
+                                  </li>
+                                </ul>
+                            <p class="posts__text">{{ comment.text|linebreaksbr }}</p>
+                            {% if comment.author == user or user.is_superuser %}
+                            <div class="del_but_div">
+                              <a class="" href="{% url 'posts:delete_comment' post.id comment.id %}">
+                                <div class="del_but">
+                                Удалить 
+                                </div>
+                              </a>
+                            </div>
+                            {% endif %}
+                            </div>
+                      </section>
+                  {% endfor %}
+                  {% else %}
+                      <h2 class="comment_header"> Комментариев  пока нет. {% if user.is_authenticated %} Станьте первым {% endif %} </h2>
+              {% endif %}
+          </article>
+        </div>
+        {% else %}
+          <h1 style="color: rgb(75, 15, 15);">Для начала вам необходимо зарегестрироваться или войти!</h1>
+          <div class="log_reg_div">
+            <a class="" href="{% url 'users:login' %}">
+              <div class="log_reg_bot">
+              Вход
+              </div>
+            </a>
+            <a class="" href="{% url 'users:signup' %}">
+              <div class="log_reg_bot">
+              Регистрация
+              </div>
+            </a>
+          </div>
+        {% endif %}
+    </section>
+{% endblock %} 

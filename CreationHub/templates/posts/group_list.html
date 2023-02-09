@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block title %}
+    CreationHub | {{group.title}}
+{% endblock %}
+{% block content %}
+{% if auth %}    
+  <section id="posts">
+    {% if page_obj %}
+    <h1 class="main__header">Все посты группы: {{ group.title }}</h1> 
+    <div class="posts container py-5">
+      <p> {{ group.description }} </p>
+        {% for post in page_obj %}
+          <div class="posts_container">
+            {% include 'includes/description.html' %}    
+          </div> 
+        {% endfor %}
+        {% else %}
+          <p class="py-5 nothing">В группе нет постов :( </p>
+        {% endif %}
+        </div>    
+      </section>
+  {% else %}
+      <section id="info">
+        <h1 style="color: rgb(75, 15, 15);">Для начала вам необходимо зарегестрироваться или войти!</h1>
+        <div class="log_reg_div">
+          <a class="" href="{% url 'users:login' %}">
+            <div class="log_reg_bot">
+            Вход
+            </div>
+          </a>
+          <a class="" href="{% url 'users:signup' %}">
+            <div class="log_reg_bot">
+            Регистрация
+            </div>
+          </a>
+        </div>
+      </section>   
+  {% endif %}
+{% endblock %} 
+
+      

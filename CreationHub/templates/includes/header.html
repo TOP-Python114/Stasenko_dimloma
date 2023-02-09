@@ -1,0 +1,38 @@
+{% load static %}
+<header id="header">
+    <div class="header__container">   
+      <nav class=" header__nav navbar  navbar-light" >
+          <a class="navbar-brand header__link " href="{% url 'posts:index' %}">
+            <p class="header__logo">
+              <span style="color:rgb(125, 120, 255)">Creation</span>Hub
+            </p>
+          </a>
+          <div class="nav__wrapper">
+            <a href="{% url 'about:author' %}" class='nav__text' >
+              👨‍💻 Об авторе
+            </a>
+            {% if user.is_authenticated %}
+            <a class="nav__text" href="{% url 'posts:create' %}">
+              ✏️ Новая запись
+            </a>
+            <a href="{% url 'posts:profile' user.username %}" class="nav__text">
+              💻 Пользователь: <span>{{ user.username }}</span>
+            </a>
+            <a class="" href="{% url 'users:logout' %}" class="nav__text">
+              🚪 Выйти
+            </a>
+          {% else %}
+            <a class="" href="{% url 'users:login' %}">
+              🕶 Войти
+            </a>
+            <a class="" href="{% url 'users:signup' %}">
+              ☀️ Регистрация
+            </a>
+          {% endif %}
+          </div>
+          <div class="header__btn header__link ">
+            <img src="{% static 'img/free-icon-menu-561184.png' %}" class=" header__list-btn">
+      </div>
+      </nav> 
+    </div>
+</header>
